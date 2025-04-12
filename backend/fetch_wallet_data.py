@@ -145,4 +145,12 @@ def run_full_report(wallet):
     save_objects(wallet)
     print("\n All wallet data exported successfully.")
 
-run_full_report(WALLET)
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Fetch XRP wallet data")
+    parser.add_argument("wallet", help="XRP wallet address")
+    args = parser.parse_args()
+
+    run_full_report(args.wallet)
+
