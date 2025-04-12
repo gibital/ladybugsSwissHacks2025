@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../clients/supabaseClient';
 import WalletConnect from '../components/WalletConnect';
+import MONOLOAN_white from '../assets/MONOLOAN_white.svg'
 import { Wallet, ArrowUpRight, ArrowDownRight, BarChart3, DollarSign, History, ChevronDown } from 'lucide-react';
 
 function Dashboard() {
@@ -48,8 +49,15 @@ function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <Wallet className="h-8 w-8 text-indigo-600" />
-              <h1 className="ml-3 text-xl font-semibold text-gray-900">GAIA</h1>
+              {/* <Wallet className="h-8 w-8 text-indigo-600" /> */}
+              <div className="w-40 h-20 overflow-hidden">
+                <img
+                  src={MONOLOAN_white}
+                  alt="MONOLOAN Logo"
+                  className="w-full h-full object-cover"
+                  style={{ clipPath: 'inset(25% 0 25% 0)', transform: 'scale(1.15)', transformOrigin: 'center', }}
+                />
+              </div>
             </div>
             <nav className="flex space-x-8 items-center">
               <button
