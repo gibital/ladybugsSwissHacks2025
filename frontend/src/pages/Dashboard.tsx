@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import WalletConnect from '../components/WalletConnect';
 import { Wallet, ArrowUpRight, ArrowDownRight, BarChart3, DollarSign, History, ChevronDown } from 'lucide-react';
 
 function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+
+  const handleConnectionChange = (connected: boolean) => {
+    setIsConnected(connected);
+  };
 
   // Mock data - replace with real data from your API
   const balances = {
@@ -74,20 +80,6 @@ function Dashboard() {
                         Request a Loan
                       </button>
                       <button
-                        onClick={() => navigate('/split-bill')}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        role="menuitem"
-                      >
-                        Split the Bill
-                      </button>
-                      <button
-                        onClick={() => navigate('/crowdfunding')}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        role="menuitem"
-                      >
-                        Crowdfunding
-                      </button>
-                      <button
                         onClick={() => navigate('/credit-score')}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                         role="menuitem"
@@ -98,6 +90,11 @@ function Dashboard() {
                   </div>
                 )}
               </div>
+              <button
+                className='border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium'
+              >
+                <WalletConnect onConnectionChange={handleConnectionChange} />
+              </button>
             </nav>
           </div>
         </div>
