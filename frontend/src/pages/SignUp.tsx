@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Wallet, Lock, Mail } from 'lucide-react';
+import { supabase } from '../clients/supabaseClient';
 
-function SignIn() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function SignUp() {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSignUp(e: FormEvent): Promise<void> {
     e.preventDefault();
-    // Add your authentication logic here
-    navigate('/dashboard');
-  };
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      setMessage(error.message);
+    } else {
+      setMessage('Check your email for a confirmation link!');
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
@@ -22,14 +26,14 @@ function SignIn() {
               <Wallet className="h-8 w-8 text-indigo-600" />
             </div>
             <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
-              Welcome back
+              Welcome
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Sign in to access your wallet
+              Sign up to check your credit score and eligibility for loans
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
             <div className="space-y-4 rounded-md">
               <div>
                 <label htmlFor="email" className="sr-only">
@@ -76,37 +80,17 @@ function SignIn() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
-
             <button
               type="submit"
               className="group relative flex w-full justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              Sign in
+              Sign up
             </button>
-
+            {message && <p className="mt-2 text-center text-sm text-gray-600">{message}</p>}
             <p className="mt-2 text-center text-sm text-gray-600">
-              Don't have an account?{' '}
-              <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Sign up now
+              Already an account?{' '}
+              <a href="/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign in now
               </a>
             </p>
           </form>
@@ -116,4 +100,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;

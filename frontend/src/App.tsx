@@ -6,6 +6,7 @@ import CreditScore from './pages/CreditScore';
 import LoanRequest from './pages/LoanRequest';
 import LoanAccepted from './pages/LoanAccepted';
 import LoanRejected from './pages/LoanRejected';
+import SignUp from './pages/SignUp';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/credit-score" element={<CreditScore />} />
           <Route path="/loan" element={<LoanRequest />} />
