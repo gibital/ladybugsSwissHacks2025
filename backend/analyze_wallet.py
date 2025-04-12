@@ -1,3 +1,4 @@
+import json
 import csv
 import os
 from datetime import datetime
@@ -107,15 +108,15 @@ def analyze_wallet_from_csv(tx_csv, tokens_csv):
     avg_holding_seconds = sum(holding_times) / len(holding_times) if holding_times else 0
     avg_holding_days = avg_holding_seconds / 86400
 
-    print("wallet_total_transactions", len(tx_dates))
-    print("wallet_age_days", wallet_age_days)
-    print("monthly_transaction_frequency", round(freq_monthly, 4))
-    print("total_xrp_sent", round(sent, 8))
-    print("total_xrp_received", round(received, 8))
-    print("unique_senders", len(senders))
-    print("unique_receivers", len(receivers))
-    print("unique_addresses_interacted", total_unique_addresses)
-    print("average_holding_days", round(avg_holding_days, 6))
+    #print("wallet_total_transactions", len(tx_dates))
+    #print("wallet_age_days", wallet_age_days)
+    #print("monthly_transaction_frequency", round(freq_monthly, 4))
+    #print("total_xrp_sent", round(sent, 8))
+    #print("total_xrp_received", round(received, 8))
+    #print("unique_senders", len(senders))
+    #print("unique_receivers", len(receivers))
+    #print("unique_addresses_interacted", total_unique_addresses)
+    #print("average_holding_days", round(avg_holding_days, 6))
 
     if os.path.exists(tokens_csv):
         with open(tokens_csv, newline='') as f:
@@ -130,7 +131,7 @@ def analyze_wallet_from_csv(tx_csv, tokens_csv):
                     decoded = hex_to_string(currency)
                     token_name = decoded if decoded else currency
                     token_balances[token_name] = balance
-                    print(f"token_{token_name}", balance)
+                    #print(f"token_{token_name}", balance)
                 except Exception:
                     continue
 
@@ -143,7 +144,21 @@ def analyze_wallet_from_csv(tx_csv, tokens_csv):
         token_balances
     )
 
-    print("\n Estimated Credit Score:", credit_score)
+    report = {
+        "wallet_total_transactions": len(tx_dates),
+        "wallet_age_days": wallet_age_days,
+        "monthly_transaction_frequency": round(freq_monthly, 4),
+        "total_xrp_sent": round(sent, 8),
+        "total_xrp_received": round(received, 8),
+        "unique_senders": len(senders),
+        "unique_receivers": len(receivers),
+        "unique_addresses_interacted": total_unique_addresses,
+        "average_holding_days": round(avg_holding_days, 6),
+        "token_balances": token_balances,
+        "estimated_credit_score": credit_score
+    }
+
+    print(json.dumps(report))
 
 if __name__ == "__main__":
     analyze_wallet_from_csv("xrp_transactions.csv", "token_balances.csv")
