@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../clients/supabaseClient';
 import WalletConnect from '../components/WalletConnect';
 import { Wallet, ArrowUpRight, ArrowDownRight, BarChart3, DollarSign, History, ChevronDown } from 'lucide-react';
 
@@ -8,6 +9,19 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+
+  async function handleLogout() {
+    // Attempt to sign out the user
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error.message);
+      // Optionally display an error message to the user.
+    } else {
+      // Optionally, clear any local state or context here.
+      // Redirect the user to the Sign In page (or another appropriate route)
+      navigate('/signin');
+    }
+  }
 
   const handleConnectionChange = (connected: boolean) => {
     setIsConnected(connected);
@@ -94,6 +108,12 @@ function Dashboard() {
                 className='border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium'
               >
                 <WalletConnect onConnectionChange={handleConnectionChange} />
+              </button>
+              <button
+                className='border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium'
+                onClick={handleLogout}
+              >
+                Log out
               </button>
             </nav>
           </div>
