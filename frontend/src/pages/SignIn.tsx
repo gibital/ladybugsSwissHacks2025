@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wallet, Lock, Mail } from 'lucide-react';
+import { supabase } from '../clients/supabaseClient';
 
 function SignIn() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  async function handleSignIn(e: FormEvent): Promise<void> {
     e.preventDefault();
-    // Add your authentication logic here
-    navigate('/dashboard');
-  };
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setMessage(error.message);
+    } else {
+      setMessage('You are now logged in!');
+      navigate('/dashboard');
+      // Optionally, perform additional tasks here, such as redirecting the user.
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
@@ -29,7 +38,7 @@ function SignIn() {
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6" onSubmit={handleSignIn}>
             <div className="space-y-4 rounded-md">
               <div>
                 <label htmlFor="email" className="sr-only">
@@ -102,7 +111,7 @@ function SignIn() {
             >
               Sign in
             </button>
-
+            {message && <p className="mt-2 text-center text-sm text-gray-600">{message}</p>}
             <p className="mt-2 text-center text-sm text-gray-600">
               Don't have an account?{' '}
               <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
