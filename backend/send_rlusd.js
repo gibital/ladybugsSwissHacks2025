@@ -1,7 +1,7 @@
 const xrpl = require("xrpl");
 
 // Replace with your Crossmark wallet seed
-const CROSSMARK_SECRET = "s"; // Get this from Crossmark export
+const CROSSMARK_SECRET = "002359D1555AD3023FB906FAD6D0C2FE75D705C0EAB7B097E9D2F107560B34FE9E"; // Get this from Crossmark export
 const RLUSD_ISSUER = "rQhWctnUrjxNNEV3LwLmuwPbU1XPrEY9Vf"; 
 
 async function sendRLUSD(to, amount) {
