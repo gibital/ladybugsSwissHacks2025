@@ -1,42 +1,84 @@
 const xrpl = require("xrpl");
+const {Account} = require('xrpl-secret-numbers');
+const {textToHex} = require('./utilities/textToHex')
+
+const account_one = new Account('486540 473460 284457 622694 374670 609954 325378 275700')
+const account_two = new Account('394020 560246 157377 176008 215300 388668 174287 069886')
+const account_three = new Account('467087 312896 177717 448937 608980 529017 376446 210150');
+
+const wallet_one = xrpl.walletFromSecretNumbers(account_one.getSecret())
+const wallet_two = xrpl.walletFromSecretNumbers(account_two.getSecret())
+const wallet_three = xrpl.walletFromSecretNumbers(account_three.getSecret());
+
+console.log(wallet_one.classicAddress)
+console.log(wallet_two.classicAddress)
 
 // Replace with your Crossmark wallet seed
-const CROSSMARK_SECRET = "002359D1555AD3023FB906FAD6D0C2FE75D705C0EAB7B097E9D2F107560B34FE9E"; // Get this from Crossmark export
-const RLUSD_ISSUER = "rQhWctnUrjxNNEV3LwLmuwPbU1XPrEY9Vf"; 
+const RLUSD_ISSUER = wallet_one.classicAddress; 
+const RLUSD_RECIPIENT = wallet_three.classicAddress
 
-async function sendRLUSD(to, amount) {
+async function sendRLUSD(from, to, amount) {
   const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233");
   await client.connect();
 
-  const wallet = xrpl.Wallet.fromSeed(CROSSMARK_SECRET);
+  const currencyCode = "RLUSD"
+  let currencyHex;
+  try {
+    currencyHex = textToHex(currencyCode);
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+    await client.disconnect();
+    return;
+  }
 
-  const payment = {
+  const paymentTx = {
     TransactionType: "Payment",
-    Account: wallet.classicAddress,
+    Account: from.classicAddress,
     Destination: to,
     Amount: {
-      currency: "RLUSD",
-      issuer: RLUSD_ISSUER,
+      currency: currencyHex,
+      issuer: from.classicAddress,
       value: amount,
     }
   };
 
-  const prepared = await client.autofill(payment);
-  prepared.LastLedgerSequence += 20;
+  try {
+    const prepared = await client.autofill(paymentTx);
+    prepared.LastLedgerSequence += 20;
+    const signed = from.sign(prepared);
+    console.log("Submitting transaction...");
+    const response = await client.submitAndWait(signed.tx_blob);
 
-  const signed = wallet.sign(prepared);
-  const tx = await client.submitAndWait(signed.tx_blob);
+    const txResult = response.result.meta.TransactionResult;
 
-  await client.disconnect();
-  return tx;
+    if (txResult === "tesSUCCESS") {
+      console.log("RLUSD payment successful.");
+      console.log(`Transaction hash: ${response.result.hash}`);
+    } else {
+      console.log("Payment failed.");
+      console.log(response.result.meta.TransactionResult);
+    }
+
+    return response.result;
+  } catch (error) {
+    console.error("Payment Error:", error.message);
+  } finally {
+    await client.disconnect();
+  }
 }
 
-// Support CLI execution for testing
+// Run directly from CLI
 if (require.main === module) {
-  const [to, amount] = process.argv.slice(2);
-  sendRLUSD(to, amount)
-    .then(tx => console.log(JSON.stringify(tx.result, null, 2)))
-    .catch(err => console.error("RLUSD TX failed", err));
+  sendRLUSD(wallet_one, wallet_three.classicAddress, "300")
+    .then(res => {
+      if (res) {
+        console.log("Payment Result:");
+        console.log(JSON.stringify(res, null, 2));
+      }
+    })
+    .catch(err => {
+      console.error("Unhandled Payment Error:", err);
+    });
 }
 
 module.exports = { sendRLUSD };
