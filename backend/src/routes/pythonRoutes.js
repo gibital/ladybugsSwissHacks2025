@@ -35,10 +35,17 @@ router.get('/report/:wallet', (req, res) => {
 });
 
 router.get('/analyze', (req, res) => {
-  runPythonScript('analyze_wallet.py', [], (err, output) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ analysis: output });
+    console.log(" Running analyze_wallet.py...");
+    runPythonScript('analyze_wallet.py', [], (err, output) => {
+      if (err) return res.status(500).json({ error: err.message });
+      try {
+        const json = JSON.parse(output);
+        res.json(json);
+      } catch (e) {
+        res.status(500).json({ error: 'Invalid JSON output', raw: output });
+      }
+    });
   });
-});
+  
 
 module.exports = router;
