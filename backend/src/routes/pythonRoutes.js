@@ -1,5 +1,5 @@
 const express = require('express');
-const { exec } = require('child_process');
+const { spawn, exec } = require('child_process');
 
 const router = express.Router();
 
@@ -23,8 +23,28 @@ function runPythonScript(scriptPath, args = [], callback) {
 
 router.post('/updateCreditScore', (req, res) => {
   const wallet = req.body.wallet_address
-  console.log(wallet)
-  return res.status(200).json();
+  if (!isValidWallet(wallet)) {
+    return res.status(400).json({ error: 'Invalid XRP wallet address.' });
+  }
+
+  runPythonScript('fetch_wallet_data.py', [wallet], (err, output) => {
+    if (err) return res.status(500).json({ error: err.message });
+    console.log(output)
+  });
+  console.log("python script fetch wallet complete")
+  runPythonScript('analyze_wallet.py', [], (err, output) => {
+    if (err) return res.status(500).json({ error: err.message });
+    try {
+      const json = JSON.parse(output);
+      console.log(json)
+      res.status(200).json(json);
+    } catch (e) {
+      res.status(500).json({ error: 'Invalid JSON output', raw: output });
+    }
+
+  });
+  console.log("python script analyze wallet complete")
+  return res;
 })
 
 router.get('/report/:wallet', (req, res) => {
@@ -46,7 +66,7 @@ router.get('/analyze', (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       try {
         const json = JSON.parse(output);
-        res.json(json);
+        res.status(200).json(json);
       } catch (e) {
         res.status(500).json({ error: 'Invalid JSON output', raw: output });
       }

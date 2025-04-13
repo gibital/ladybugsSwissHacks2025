@@ -10,14 +10,14 @@ app.use(express.json());
 // app.use('/api', balanceRoute);
 app.use('/api', router);
 
-const loanRoutes = require("./routes/loanRoutes");
-app.use("/api", loanRoutes);
+// const loanRoutes = require("./routes/loanRoutes");
+// app.use("/api", loanRoutes);
 
-const rlusdRoutes = require("./routes/rlusdRoute");
-app.use("/api", rlusdRoutes);
+// const rlusdRoutes = require("./routes/rlusdRoute");
+// app.use("/api", rlusdRoutes);
 
-const trustlineRoute = require("./routes/trustlineRoute");
-app.use("/api", trustlineRoute);
+// const trustlineRoute = require("./routes/trustlineRoute");
+// app.use("/api", trustlineRoute);
 
 
 // Default error handler
