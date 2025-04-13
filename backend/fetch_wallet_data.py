@@ -66,11 +66,11 @@ def save_xrp_transactions(wallet):
             "direction": "outgoing" if tx_data.get("Account") == wallet else "incoming"
         })
 
-    with open("xrp_transactions.csv", "w", newline="") as f:
+    with open(f"{wallet}_xrp_transactions.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
-    print(f" Saved {len(rows)} XRP payment transactions to xrp_transactions.csv")
+    print(f" Saved {len(rows)} XRP payment transactions to {wallet}_xrp_transactions.csv")
 
 ### 2. Token Balances (Trust Lines) ###
 def fetch_account_lines(wallet):
@@ -83,7 +83,7 @@ def fetch_account_lines(wallet):
 
 def save_assets(wallet):
     assets = fetch_account_lines(wallet)
-    with open("token_balances.csv", "w", newline="") as f:
+    with open(f"{wallet}_token_balances.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=assets[0].keys())
         writer.writeheader()
         writer.writerows(assets)
@@ -103,11 +103,11 @@ def save_nfts(wallet):
     if not nfts:
         print("No NFTs found.")
         return
-    with open("nfts.csv", "w", newline="") as f:
+    with open(f"{wallet}_nfts.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=nfts[0].keys())
         writer.writeheader()
         writer.writerows(nfts)
-    print(f" Saved {len(nfts)} NFTs to nfts.csv")
+    print(f" Saved {len(nfts)} NFTs to {wallet}_nfts.csv")
 
 ### 4. General Ledger Objects ###
 def fetch_account_objects(wallet):
@@ -129,12 +129,12 @@ def save_objects(wallet):
     for obj in objects:
         all_keys.update(obj.keys())
 
-    with open("ledger_objects.csv", "w", newline="") as f:
+    with open(f"{wallet}_ledger_objects.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=sorted(all_keys))
         writer.writeheader()
         for obj in objects:
             writer.writerow(obj)
-    print(f" Saved {len(objects)} ledger objects to ledger_objects.csv")
+    print(f" Saved {len(objects)} ledger objects to {wallet}_ledger_objects.csv")
 
 
 def run_full_report(wallet):

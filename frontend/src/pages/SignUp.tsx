@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Wallet, Lock, Mail } from 'lucide-react';
 import { supabase } from '../clients/supabaseClient';
 

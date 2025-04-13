@@ -1,6 +1,7 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Shield, TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
+import UpdateCreditScore from '../components/UpdateCreditScore'
+
 
 function CreditScore() {
   const navigate = useNavigate();
@@ -78,11 +79,12 @@ function CreditScore() {
                     className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500"
                   ></div>
                 </div>
-                <button
+                <UpdateCreditScore />
+                {/* <button
                   className="w-full mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
                 >
                   Update Score
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

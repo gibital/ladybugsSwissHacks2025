@@ -12,13 +12,16 @@ function SignIn() {
 
   async function handleSignIn(e: FormEvent): Promise<void> {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setMessage(error.message);
-    } else {
+    } else if (data.session) {
+      localStorage.setItem('access_token', data.session.access_token);
       setMessage('You are now logged in!');
       navigate('/dashboard');
       // Optionally, perform additional tasks here, such as redirecting the user.
+    } else {
+      setMessage('Oops, this should never have happened!');
     }
   }
 

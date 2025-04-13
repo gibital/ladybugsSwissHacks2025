@@ -12,28 +12,28 @@ import SignUp from './pages/SignUp';
 function App() {
   return (
     <WalletProvider>
-      <Router>
-        <Routes>
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/credit-score" element={<CreditScore />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/loan" element={<LoanRequest />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/loan/accepted" element={<LoanAccepted />} />
-          </Route>
-          <Route element={<PrivateRoute />}>
-            <Route path="/loan/rejected" element={<LoanRejected />} />
-          </Route>
-          <Route path="/" element={<Navigate to="/signin" replace />} />
-        </Routes>
-      </Router>
+        <Router>
+          <Routes>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/credit-score" element={<CreditScore />} />
+            </Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/loan" element={<LoanRequest />} />
+            </Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/loan/accepted" element={<LoanAccepted />} />
+            </Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/loan/rejected" element={<LoanRejected />} />
+            </Route>
+            <Route path="/" element={<Navigate to="/signin" replace />} />
+          </Routes>
+        </Router>
     </WalletProvider>
   );
 }

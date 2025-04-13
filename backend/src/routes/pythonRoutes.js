@@ -21,6 +21,12 @@ function runPythonScript(scriptPath, args = [], callback) {
   });
 }
 
+router.post('/updateCreditScore', (req, res) => {
+  const wallet = req.body.wallet_address
+  console.log(wallet)
+  return res.status(200).json();
+})
+
 router.get('/report/:wallet', (req, res) => {
   const wallet = req.params.wallet;
 
