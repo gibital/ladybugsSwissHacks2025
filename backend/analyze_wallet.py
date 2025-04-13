@@ -157,8 +157,12 @@ def analyze_wallet_from_csv(tx_csv, tokens_csv):
         "token_balances": token_balances,
         "estimated_credit_score": credit_score
     }
-
     print(json.dumps(report))
+    return report
 
 if __name__ == "__main__":
-    analyze_wallet_from_csv("xrp_transactions.csv", "token_balances.csv")
+    import argparse
+    parser = argparse.ArgumentParser(description="Fetch XRP wallet data")
+    parser.add_argument("wallet", help="XRP wallet address")
+    args = parser.parse_args()
+    analyze_wallet_from_csv(f"{args.wallet}_xrp_transactions.csv", f"{args.wallet}_token_balances.csv")

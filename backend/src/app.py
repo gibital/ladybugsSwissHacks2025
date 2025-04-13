@@ -1,15 +1,12 @@
 # app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify # type: ignore
+from flask_cors import CORS
+from fetch_wallet_data import run_full_report
 
 # Create the Flask application object.
 app = Flask(__name__)
 
-# A simple GET route that returns a welcome message.
-@app.route('/', methods=['GET'])
-def home():
-    return "Welcome to the Flask backend!"
-
-# A GET route that returns some JSON data.
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 
 # A POST route that accepts JSON payload and echoes back the data.
@@ -17,6 +14,9 @@ def home():
 def post_data():
     # Get the JSON payload sent from the client.
     payload = request.get_json()
+    print(payload)
+
+    # run_full_report()
     
     # Here, you might process the payload or store it.
     # For now, we're just echoing it back.

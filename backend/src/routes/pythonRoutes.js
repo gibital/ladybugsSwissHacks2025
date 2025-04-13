@@ -28,50 +28,38 @@ router.post('/updateCreditScore', (req, res) => {
   }
 
   runPythonScript('fetch_wallet_data.py', [wallet], (err, output) => {
-    if (err) return res.status(500).json({ error: err.message });
-    console.log(output)
   });
-  console.log("python script fetch wallet complete")
-  runPythonScript('analyze_wallet.py', [], (err, output) => {
-    if (err) return res.status(500).json({ error: err.message });
-    try {
+  runPythonScript('analyze_wallet.py', [wallet], (err, output) => {
       const json = JSON.parse(output);
-      console.log(json)
-      res.status(200).json(json);
-    } catch (e) {
-      res.status(500).json({ error: 'Invalid JSON output', raw: output });
-    }
-
+      return res.status(200).json(json);
   });
-  console.log("python script analyze wallet complete")
-  return res;
 })
 
-router.get('/report/:wallet', (req, res) => {
-  const wallet = req.params.wallet;
+// router.get('/report/:wallet', (req, res) => {
+//   const wallet = req.params.wallet;
 
-  if (!isValidWallet(wallet)) {
-    return res.status(400).json({ error: 'Invalid XRP wallet address.' });
-  }
+//   if (!isValidWallet(wallet)) {
+//     return res.status(400).json({ error: 'Invalid XRP wallet address.' });
+//   }
 
-  runPythonScript('fetch_wallet_data.py', [wallet], (err, output) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'Wallet data fetched successfully.', logs: output });
-  });
-});
+//   runPythonScript('fetch_wallet_data.py', [wallet], (err, output) => {
+//     if (err) return res.status(500).json({ error: err.message });
+//     res.json({ message: 'Wallet data fetched successfully.', logs: output });
+//   });
+// });
 
-router.get('/analyze', (req, res) => {
-    console.log(" Running analyze_wallet.py...");
-    runPythonScript('analyze_wallet.py', [], (err, output) => {
-      if (err) return res.status(500).json({ error: err.message });
-      try {
-        const json = JSON.parse(output);
-        res.status(200).json(json);
-      } catch (e) {
-        res.status(500).json({ error: 'Invalid JSON output', raw: output });
-      }
-    });
-  });
+// router.get('/analyze', (req, res) => {
+//     console.log(" Running analyze_wallet.py...");
+//     runPythonScript('analyze_wallet.py', [], (err, output) => {
+//       if (err) return res.status(500).json({ error: err.message });
+//       try {
+//         const json = JSON.parse(output);
+//         res.status(200).json(json);
+//       } catch (e) {
+//         res.status(500).json({ error: 'Invalid JSON output', raw: output });
+//       }
+//     });
+//   });
   
 
 module.exports = router;
